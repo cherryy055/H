@@ -22,11 +22,22 @@ input {
 button {
     font-family: 'Roboto', sans-serif;
     font-size: 3vh;
+  transition-duration: 0.4s;
+
     border-radius: 10px;
-    background-color: rgb(70, 75, 83);
+  background-color: rgb(238, 238, 238); 
+  color: rgb(0, 0, 0); 
+  border: 2px solid rgb(122, 32, 33);
+
     padding: 2vh 2vw;
     margin: 0 4vw;
     height: 8vh;
+}
+
+
+button:hover {
+  background-color: rgb(122, 32, 33);
+  color: rgb(238, 238, 238);
 }
 
 .button-counter {
@@ -90,4 +101,3 @@ button {
         margin: 0.5vw 0 0 0;
     }
 }
-
