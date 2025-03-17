@@ -1,54 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="main.js" defer></script>
-    <title>Stitches and Rows</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flat-ui/2.3.0/css/flat-ui.min.css" integrity="sha512-6f7HT84a/AplPkpSRSKWqbseRTG4aRrhadjZezYQ0oVk/B+nm/US5KzQkyyOyh0Mn9cyDdChRdS9qaxJRHayww==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style.css">
+    <title>العدادات المتعددة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem 3rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            width: 90%;
+            max-width: 1200px;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #3498db;
+            display: inline-block;
+        }
+
+        .counters-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .counter-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .counter-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .number-label {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            font-weight: 600;
+            min-width: 50px;
+            border-right: 2px solid #3498db;
+            padding-right: 1rem;
+        }
+
+        .counter-box {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .counter {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3498db;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        button {
+            padding: 0.4rem 1rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 992px) {
+            .counters-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .counters-grid {
+                grid-template-columns: 1fr;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="div-inputs">
-        <p>
-            <input type="number" name="stitches" id="input-stitches">
-            <label for="input-stitches">Stitches per row</label>
-        </p>
-        <p>
-            <input type="checkbox" name="autoincrease" id="input-autoincrease">
-            <label for="input-autoincrease">Auto-increase rows when completed</label>
-        </p>
+    <div class="container">
+        <div id="sectionsContainer"></div>
     </div>
-    <div id="div-pip-container">
-        <div id="div-pip-element">
-            <div class="div-counters">
-                <button id="button-stitch" class="button-counter">
-                    <div id="stitches-counter">0</div>
-                    <div id="stitches-counter-text">Stitches</div>
-                </button>
-                <button id="button-row" class="button-counter">
-                    <div id="rows-counter">0</div>
-                    <div id="rows-counter-text">Rows</div>
-                </button>
-            </div>
-            <div class="div-buttons">
-                <button id="button-undo">Undo</button>
-                <button id="button-reset">Reset</button>
-            </div>
-        </div>
-        <div id="div-pip-message" style="display: none;">
-            In picture-in-picture mode
-        </div>
-    </div>
-    <div class="div-buttons">
-        <button id="button-edit">Edit Values</button>
-    </div>
-    <div id="div-button-pip" class="div-buttons">
-            <button id="button-start-pip"><i class="fui-export"></i></button>
-    </div>
+
+    <script>
+        const names = ['nin', 'ni', 'snr', 'bv', 'bc', 'nk', 'ox', 'lx', 'xe', 'ss'];
+        const numbers = [50, 52, 54, 56, 58, 60];
+        const container = document.getElementById('sectionsContainer');
+
+        names.forEach(name => {
+            const section = document.createElement('div');
+            section.className = 'section';
+            section.innerHTML = `
+                <h2 class="section-title">${name}</h2>
+                <div class="counters-grid" id="${name}-counters"></div>
+            `;
+            
+            const grid = section.querySelector('.counters-grid');
+            numbers.forEach(number => {
+                const counterItem = document.createElement('div');
+                counterItem.className = 'counter-item';
+                counterItem.innerHTML = `
+                    <div class="number-label">${number}</div>
+                    <div class="counter-box">
+                        <button onclick="changeCount(this, -1)">-</button>
+                        <div class="counter">0</div>
+                        <button onclick="changeCount(this, 1)">+</button>
+                    </div>
+                `;
+                grid.appendChild(counterItem);
+            });
+            
+            container.appendChild(section);
+        });
+
+        function changeCount(button, operation) {
+            const counterElement = button.parentElement.querySelector('.counter');
+            let count = parseInt(counterElement.textContent);
+            count += operation;
+            counterElement.textContent = count;
+            counterElement.style.color = count < 0 ? '#e74c3c' : '#3498db';
+        }
+    </script>
 </body>
 </html>
