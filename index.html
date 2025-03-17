@@ -3,83 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>العدادات المتعددة</title>
+    <title>إدارة الأقسام</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: linear-gradient(135deg, #f0f2f5 0%, #dfe3e6 100%);
+            min-height: 100vh;
         }
 
-        .container {
-            background-color: white;
-            padding: 2rem 3rem;
+        .main-container {
+            padding: 2rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+
+        #sectionsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .group-container {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            padding: 1.5rem;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-            width: 90%;
-            max-width: 1200px;
+            transition: all 0.3s ease;
+            min-width: 320px;
+            position: relative;
         }
 
-        .section {
-            margin-bottom: 3rem;
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        .group-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
         }
 
         .section-title {
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: #2c3e50;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 3px solid #3498db;
-            display: inline-block;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            flex-grow: 1;
+        }
+
+        .section-title.editable {
+            border: 2px dashed #3498db;
+            background: #f8fbff;
+        }
+
+        .controls-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #3498db;
+            color: white;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .controls-button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            padding: 0.5rem 1rem;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            border-radius: 8px;
         }
 
         .counters-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
 
         .counter-item {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: space-between;
             padding: 1rem;
-            background: white;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.2s ease;
         }
 
         .counter-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .number-label {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: #2c3e50;
             font-weight: 600;
-            min-width: 50px;
-            border-right: 2px solid #3498db;
-            padding-right: 1rem;
         }
 
         .counter-box {
             display: flex;
             align-items: center;
-            gap: 0.8rem;
+            gap: 1rem;
         }
 
         .counter {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #3498db;
             min-width: 40px;
@@ -87,14 +144,14 @@
         }
 
         button {
-            padding: 0.4rem 1rem;
-            font-size: 1rem;
+            padding: 0.8rem 1.2rem;
+            font-size: 1.1rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             background-color: #3498db;
             color: white;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         button:hover {
@@ -102,57 +159,124 @@
             transform: scale(1.05);
         }
 
-        @media (max-width: 992px) {
-            .counters-grid {
-                grid-template-columns: repeat(2, 1fr);
+        @media (max-width: 1200px) {
+            #sectionsContainer {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             }
         }
 
         @media (max-width: 768px) {
-            .counters-grid {
-                grid-template-columns: 1fr;
+            .main-container {
+                padding: 1.5rem;
             }
-            .section-title {
-                font-size: 1.6rem;
+            
+            .group-container {
+                min-width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="main-container">
+        <div class="controls">
+            <button class="controls-button" onclick="addNewSection()">
+                <span style="font-size: 1.4rem">➕</span> 
+                <span>إضافة عباية جديدة</span>
+            </button>
+        </div>
         <div id="sectionsContainer"></div>
     </div>
 
     <script>
-        const names = ['nin', 'ni', 'snr', 'bv', 'bc', 'nk', 'ox', 'lx', 'xe', 'ss'];
+        let sections = [];
         const numbers = [50, 52, 54, 56, 58, 60];
-        const container = document.getElementById('sectionsContainer');
+        const sectionsContainer = document.getElementById('sectionsContainer');
 
-        names.forEach(name => {
-            const section = document.createElement('div');
-            section.className = 'section';
-            section.innerHTML = `
-                <h2 class="section-title">${name}</h2>
-                <div class="counters-grid" id="${name}-counters"></div>
-            `;
-            
-            const grid = section.querySelector('.counters-grid');
-            numbers.forEach(number => {
-                const counterItem = document.createElement('div');
-                counterItem.className = 'counter-item';
-                counterItem.innerHTML = `
-                    <div class="number-label">${number}</div>
-                    <div class="counter-box">
-                        <button onclick="changeCount(this, -1)">-</button>
-                        <div class="counter">0</div>
-                        <button onclick="changeCount(this, 1)">+</button>
-                    </div>
-                `;
-                grid.appendChild(counterItem);
-            });
-            
-            container.appendChild(section);
-        });
+        class Section {
+            constructor(name = 'اسم العباية') {
+                this.id = Date.now();
+                this.name = name;
+                this.element = this.createSectionElement();
+            }
+
+            createSectionElement() {
+                const groupContainer = document.createElement('div');
+                groupContainer.className = 'group-container';
+                
+                // Header with controls
+                const header = document.createElement('div');
+                header.className = 'section-header';
+                
+                const title = document.createElement('span');
+                title.className = 'section-title';
+                title.textContent = this.name;
+                title.onclick = () => this.editName();
+                
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'controls-button delete-btn';
+                deleteBtn.textContent = 'حذف القسم';
+                deleteBtn.onclick = () => this.delete();
+                
+                groupContainer.appendChild(deleteBtn);
+                groupContainer.appendChild(title);
+                
+                // Counters grid
+                const grid = document.createElement('div');
+                grid.className = 'counters-grid';
+                
+                numbers.forEach(number => {
+                    const counterItem = document.createElement('div');
+                    counterItem.className = 'counter-item';
+                    counterItem.innerHTML = `
+                        <div class="number-label">${number}</div>
+                        <div class="counter-box">
+                            <button onclick="changeCount(this, -1)">-</button>
+                            <div class="counter">0</div>
+                            <button onclick="changeCount(this, 1)">+</button>
+                        </div>
+                    `;
+                    grid.appendChild(counterItem);
+                });
+                
+                groupContainer.appendChild(grid);
+                return groupContainer;
+            }
+
+            editName() {
+                const title = this.element.querySelector('.section-title');
+                const oldName = title.textContent;
+                
+                title.contentEditable = true;
+                title.classList.add('editable');
+                title.focus();
+                
+                const finishEdit = () => {
+                    title.contentEditable = false;
+                    title.classList.remove('editable');
+                    this.name = title.textContent.trim() || oldName;
+                    title.removeEventListener('blur', finishEdit);
+                    title.removeEventListener('keypress', handleEnter);
+                };
+                
+                const handleEnter = (e) => {
+                    if(e.key === 'Enter') finishEdit();
+                };
+                
+                title.addEventListener('blur', finishEdit);
+                title.addEventListener('keypress', handleEnter);
+            }
+
+            delete() {
+                this.element.remove();
+                sections = sections.filter(s => s.id !== this.id);
+            }
+        }
+
+        function addNewSection() {
+            const newSection = new Section();
+            sections.push(newSection);
+            sectionsContainer.appendChild(newSection.element);
+        }
 
         function changeCount(button, operation) {
             const counterElement = button.parentElement.querySelector('.counter');
@@ -160,6 +284,14 @@
             count += operation;
             counterElement.textContent = count;
             counterElement.style.color = count < 0 ? '#e74c3c' : '#3498db';
+        }
+
+        // إضافة أربع أقسام افتراضية عند التحميل
+        window.onload = () => {
+            addNewSection();
+            addNewSection();
+            addNewSection();
+            addNewSection();
         }
     </script>
 </body>
